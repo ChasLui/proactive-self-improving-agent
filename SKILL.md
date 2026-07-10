@@ -1,15 +1,33 @@
 ---
 name: proactive-self-improving-agent
-version: 1.0.0
-description: "自动捕获经验并安全进化的技能。触发条件：(1)命令/操作失败时→记ERRORS.md (2)被用户纠正('不对'/'应该是')时→记LEARNINGS.md (3)用户需要不存在的能力时→记FEATURE_REQUESTS.md (4)外部API/工具出错时→记ERRORS.md (5)发现自己知识过时/错误时→记LEARNINGS.md (6)发现更好做法时→记LEARNINGS.md (7)每个任务完成时→回顾过程，有新经验则记LEARNINGS.md。去重原则：如果没有新经验或已有条目已覆盖则跳过不写。每次写入同时在.learnings/CHANGELOG.md追加JSONL日志。经验反复出现≥3次时晋升到AGENTS.md/TOOLS.md/SOUL.md。详见正文。"
-author: yanhongxi-openclaw
+version: 2.0.0
+description: "自动捕获经验并安全进化的技能。触发条件：(1)命令/操作失败时→记ERRORS.md (2)被用户纠正('不对'/'应该是')时→记LEARNINGS.md (3)用户需要不存在的能力时→记FEATURE_REQUESTS.md (4)外部API/工具出错时→记ERRORS.md (5)发现自己知识过时/错误时→记LEARNINGS.md (6)发现更好做法时→记LEARNINGS.md (7)每个任务完成时→回顾过程，有新经验则记LEARNINGS.md。去重原则：如果没有新经验或已有条目已覆盖则跳过不写。每次写入同时在.learnings/CHANGELOG.md追加JSONL日志。经验反复出现≥3次时晋升到AGENTS.md/opencode.json instructions。详见正文。"
+license: MIT
+metadata:
+  upstream: "https://github.com/ChasLui/proactive-self-improving-agent"
+  adapted_for: "OpenCode native skill"
 ---
 
 # Proactive Self-Improving Agent
 
 **自动捕获经验 · 安全进化 · 记录轨迹**
 
-让 agent 在日常工作中自动识别错误、纠正和最佳实践，结构化记录，安全地将经验沉淀为长期能力。
+让 AI agent 在日常工作中自动识别错误、纠正和最佳实践，结构化记录，安全地将经验沉淀为长期能力。
+
+## OpenCode Integration
+
+加载方式（任何项目中使用）：
+```opencode
+skill(name="proactive-self-improving-agent")
+```
+
+OpenCode 通过 `~/.config/opencode/skills/<name>/SKILL.md` 加载全局 skill。
+本 skill 被加载后会自动监测 7 种触发场景并在 `.learnings/` 中记录结构化经验。
+
+**OpenCode 原生机制：**
+- 使用 `todowrite` 追踪当前会话的任务状态
+- 使用 `Read`/`Write`/`Edit` 工具进行文件操作
+- 经验晋升目标：项目 `AGENTS.md` / `opencode.json` instructions / 全局系统指令
 
 ---
 
@@ -122,7 +140,7 @@ author: yanhongxi-openclaw
 - Source: error | correction | user_feedback | task_review | best_practice
 - See Also: LRN-XXXXXXXX-XXX（关联条目）
 - Pattern-Key: xxx（可选，用于递归模式检测）
-- Promoted-To: AGENTS.md（仅晋升后填写）
+- Promoted-To: AGENTS.md / opencode.json（仅晋升后填写）
 
 ---
 ```
@@ -205,10 +223,10 @@ simple | medium | complex
 当一条 learning **足够重要且通用**时，将其精炼后写入永久文件：
 
 | 经验类型 | 晋升到 | 举例 |
-|---|---|---|
+|---|---|---|---|
 | 工作流改进 | `AGENTS.md` | "批量处理论文时每篇独立 spawn" |
-| 工具使用技巧 | `TOOLS.md` | "Semantic Scholar API 限流 3s 间隔" |
-| 行为模式 | `SOUL.md` | "不确定分类时用 unclassified/" |
+| 工具使用技巧 | `opencode.json` instructions | "Semantic Scholar API 限流 3s 间隔" |
+| 行为模式 | `AGENTS.md` / 系统指令 | "不确定分类时用 unclassified/" |
 
 **晋升步骤：**
 
@@ -242,7 +260,7 @@ grep -r "关键词" .learnings/
 
 **提取步骤：**
 
-1. 创建 `skills/<skill-name>/SKILL.md`
+1. 创建 `~/.config/opencode/skills/<skill-name>/SKILL.md` 或在项目内创建 `skills/<skill-name>/SKILL.md`
 2. 将解决方案写成独立的、自包含的技能说明
 3. 更新原条目：Status → `promoted_to_skill`
 4. 记录日志：CHANGELOG.md 追加 `extract` 记录
@@ -294,7 +312,7 @@ grep -r "关键词" .learnings/
 \```jsonl
 {"ts":"2026-03-02T11:00:00+08:00","action":"add","type":"learning","id":"LRN-20260302-001","summary":"Semantic Scholar API 需要 3s 间隔防限流"}
 {"ts":"2026-03-02T14:30:00+08:00","action":"add","type":"error","id":"ERR-20260302-001","summary":"pdfplumber 遇到扫描版 PDF 返回空文本"}
-{"ts":"2026-03-03T09:00:00+08:00","action":"promote","type":"learning","id":"LRN-20260302-001","summary":"API 限流规则","target":"TOOLS.md"}
+{"ts":"2026-03-03T09:00:00+08:00","action":"promote","type":"learning","id":"LRN-20260302-001","summary":"API 限流规则","target":"opencode.json instructions"}
 {"ts":"2026-03-05T10:00:00+08:00","action":"extract","type":"learning","id":"LRN-20260304-002","summary":"扫描版 PDF 处理","target":"skills/pdf-fallback"}
 {"ts":"2026-03-05T12:00:00+08:00","action":"resolve","type":"error","id":"ERR-20260302-001","summary":"改用 OCR fallback 方案"}
 \```
@@ -316,7 +334,7 @@ grep -r "关键词" .learnings/
 | action | 含义 | 触发时机 |
 |---|---|---|
 | `add` | 新增记录 | 写入 LEARNINGS/ERRORS/FEATURE_REQUESTS 时 |
-| `promote` | 晋升 | 经验写入 AGENTS.md / TOOLS.md / SOUL.md 时 |
+| `promote` | 晋升 | 经验写入 AGENTS.md / opencode.json instructions 时 |
 | `extract` | 提取技能 | 经验提取为独立 skill 时 |
 | `resolve` | 已解决 | 问题修复、标记 resolved 时 |
 
@@ -413,11 +431,11 @@ sed -n '/^```jsonl$/,/^```$/p' .learnings/CHANGELOG.md | grep -v '```'
       │
       │  反复出现 or 足够重要
       ▼
-AGENTS.md / TOOLS.md     （晋升为永久规则）
+AGENTS.md / opencode.json instructions  （晋升为永久规则）
       │
       │  足够通用 + 可独立
       ▼
-skills/<new-skill>/      （提取为独立技能）
+~/.config/opencode/skills/<new-skill>/  （提取为独立技能）
 ```
 
 ### 写入检查清单

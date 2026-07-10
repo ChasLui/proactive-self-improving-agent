@@ -2,7 +2,7 @@
 
 自动捕获经验 · 安全进化 · 记录轨迹
 
-专为 OpenClaw agent 设计的自改进技能，融合 proactive-agent 的行为准则与 self-improving-agent 的结构化学习系统。
+专为 OpenCode AI agent 设计的自改进技能，融合 proactive-agent 的行为准则与 self-improving-agent 的结构化学习系统。
 
 ## 特性
 
@@ -16,16 +16,16 @@
 ## 安装
 
 ```bash
-# OpenClaw
-openclaw add https://github.com/yanhongxi-openclaw/proactive-self-improving-agent
+# OpenCode — 全局 skill 安装（symlink 到 skills 目录）
+ln -sf /Users/chao.liu/my-clone/github.com/ChasLui/proactive-self-improving-agent ~/.config/opencode/skills/proactive-self-improving-agent
 
-# 或手动
-git clone https://github.com/yanhongxi-openclaw/proactive-self-improving-agent.git ~/.openclaw/skills/proactive-self-improving-agent
+# 在任何项目中使用 skill 加载：
+# skill(name="proactive-self-improving-agent")
 ```
 
 ## 使用
 
-安装后 agent 自动加载 SKILL.md。确保 workspace 下有 `.learnings/` 目录：
+加载后 agent 自动应用 SKILL.md 规则。`.learnings/` 目录会在 skill 加载的项目中自动创建和使用。
 
 ```bash
 mkdir -p .learnings
