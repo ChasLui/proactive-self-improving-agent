@@ -1,0 +1,15 @@
+{
+  "name": "proactive-self-improving-agent",
+  "description": "自改进 agent 技能：结构化捕获错误与经验，验证后晋升为长期规则。",
+  "owner": {
+    "name": "ChasLui",
+    "url": "https://github.com/ChasLui"
+  },
+  "plugins": [
+    {
+      "name": "proactive-self-improving-agent",
+      "source": "./",
+      "description": "自动捕获经验并安全进化：错误、纠正、知识空白、更好做法结构化落盘，反复出现时晋升为永久规则或独立 skill。"
+    }
+  ]
+}

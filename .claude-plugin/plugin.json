@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "proactive-self-improving-agent",
+  "displayName": "Proactive Self-Improving Agent",
+  "version": "2.0.0",
+  "description": "自动捕获经验并安全进化：错误、纠正、知识空白、更好做法结构化落盘，反复出现时晋升为永久规则或独立 skill。",
+  "author": {
+    "name": "ChasLui",
+    "url": "https://github.com/ChasLui"
+  },
+  "homepage": "https://github.com/ChasLui/proactive-self-improving-agent",
+  "repository": "https://github.com/ChasLui/proactive-self-improving-agent",
+  "license": "MIT",
+  "keywords": [
+    "self-improvement",
+    "memory",
+    "learnings",
+    "agent",
+    "meta"
+  ]
+}
