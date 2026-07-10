@@ -1,37 +1,75 @@
-# Proactive Self-Improving Agent
+# Proactive Self-Improving Agent for Codex
 
-自动捕获经验 · 安全进化 · 记录轨迹
+Codex skill for recording reusable lessons from failures, user corrections, stale assumptions, missing capabilities, and end-of-task retrospectives.
 
-专为 OpenClaw agent 设计的自改进技能，融合 proactive-agent 的行为准则与 self-improving-agent 的结构化学习系统。
+The goal is lightweight self-improvement: keep raw learning records in local files, deduplicate before writing, and promote only small verified rules into Codex configuration or skills.
 
-## 特性
+## What It Does
 
-- **7 种触发条件**：错误、纠正、知识空白、更好做法、能力请求、任务完成回顾 + 学术场景扩展
-- **结构化记录**：LEARNINGS / ERRORS / FEATURE_REQUESTS 三文件体系
-- **经验进化**：晋升机制 + 递归检测（≥3 次自动晋升）+ 技能提取
-- **安全护栏**：ADL 防漂移 + VFM 价值优先评分
-- **操作日志**：JSONL 格式 CHANGELOG，机器可读
-- **行为准则**：坚韧不放弃、验证后报完成、安全加固
+- Records reusable learnings in `~/.codex/.learnings/LEARNINGS.md`
+- Records reusable failures in `~/.codex/.learnings/ERRORS.md`
+- Records missing reusable capabilities in `~/.codex/.learnings/FEATURE_REQUESTS.md`
+- Appends machine-readable audit rows to `~/.codex/.learnings/CHANGELOG.md`
+- Requires deduplication before writing new entries
+- Promotes lessons only when they are verified, reusable, and small enough to keep long-term instructions useful
 
-## 安装
+## Install
 
-```bash
-# OpenClaw
-openclaw add https://github.com/yanhongxi-openclaw/proactive-self-improving-agent
-
-# 或手动
-git clone https://github.com/yanhongxi-openclaw/proactive-self-improving-agent.git ~/.openclaw/skills/proactive-self-improving-agent
-```
-
-## 使用
-
-安装后 agent 自动加载 SKILL.md。确保 workspace 下有 `.learnings/` 目录：
+Clone or copy this repository into Codex's native skills directory:
 
 ```bash
-mkdir -p .learnings
+mkdir -p ~/.codex/skills
+git clone https://github.com/ChasLui/proactive-self-improving-agent.git ~/.codex/skills/proactive-self-improving-agent
 ```
 
-详见 [SKILL.md](SKILL.md)。
+If you already manage skills elsewhere, the required runtime file is:
+
+```text
+~/.codex/skills/proactive-self-improving-agent/SKILL.md
+```
+
+## Initialize Learnings
+
+Create the Codex learning store:
+
+```bash
+mkdir -p ~/.codex/.learnings
+cp .learnings/*.md ~/.codex/.learnings/
+```
+
+If `~/.codex` is managed by chezmoi, keep the source copy in sync, for example under:
+
+```text
+~/.local/share/chezmoi/dot_codex/dot_learnings/
+```
+
+## Usage
+
+When this skill is loaded, Codex should evaluate whether a new reusable lesson exists after:
+
+- command, tool, API, MCP, browser, or filesystem failures
+- user corrections such as "不对", "不是", "错了", or "应该是"
+- stale assumptions or outdated API knowledge
+- discovery of a better repeatable workflow
+- requests for missing reusable Codex capabilities
+- task completion retrospectives
+
+Not every trigger should create a record. Skip one-off noise, ordinary task logs, secrets, and anything already covered by an existing entry.
+
+See [SKILL.md](SKILL.md) for the full protocol.
+
+## Files
+
+```text
+.
+├── SKILL.md
+├── README.md
+└── .learnings/
+    ├── LEARNINGS.md
+    ├── ERRORS.md
+    ├── FEATURE_REQUESTS.md
+    └── CHANGELOG.md
+```
 
 ## License
 
