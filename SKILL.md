@@ -1,8 +1,8 @@
 ---
 name: proactive-self-improving-agent
 version: 1.0.0
-description: "自动捕获经验并安全进化的技能。触发条件：(1)命令/操作失败时→记ERRORS.md (2)被用户纠正('不对'/'应该是')时→记LEARNINGS.md (3)用户需要不存在的能力时→记FEATURE_REQUESTS.md (4)外部API/工具出错时→记ERRORS.md (5)发现自己知识过时/错误时→记LEARNINGS.md (6)发现更好做法时→记LEARNINGS.md (7)每个任务完成时→回顾过程，有新经验则记LEARNINGS.md。去重原则：如果没有新经验或已有条目已覆盖则跳过不写。每次写入同时在.learnings/CHANGELOG.md追加JSONL日志。经验反复出现≥3次时晋升到AGENTS.md/TOOLS.md/SOUL.md。详见正文。"
-author: yanhongxi-openclaw
+description: "自动捕获经验并安全进化的技能。触发条件：(1)命令/操作失败时→记ERRORS.md (2)被用户纠正('不对'/'应该是')时→记LEARNINGS.md (3)用户需要不存在的能力时→记FEATURE_REQUESTS.md (4)外部API/工具出错时→记ERRORS.md (5)发现自己知识过时/错误时→记LEARNINGS.md (6)发现更好做法时→记LEARNINGS.md (7)每个任务完成时→回顾过程，有新经验则记LEARNINGS.md。去重原则：如果没有新经验或已有条目已覆盖则跳过不写。每次写入同时在~/.gemini/.learnings/CHANGELOG.md追加JSONL日志。经验反复出现≥3次时晋升到GEMINI.md。详见正文。"
+author: ChasLui
 ---
 
 # Proactive Self-Improving Agent
@@ -20,7 +20,8 @@ author: yanhongxi-openclaw
 3. [经验进化路径](#3-经验进化路径)
 4. [操作日志](#4-操作日志changelogmd)
 5. [行为准则](#5-行为准则)
-6. [快速参考](#6-快速参考)
+6. [自动化 (Automation)](#6-自动化-automation)
+7. [快速参考](#7-快速参考)
 
 ---
 
@@ -390,7 +391,42 @@ sed -n '/^```jsonl$/,/^```$/p' .learnings/CHANGELOG.md | grep -v '```'
 
 ---
 
-## 6. 快速参考
+## 6. 自动化 (Automation)
+
+为了简化记录流程，本技能提供一个辅助脚本 `scripts/add_learning.sh`，用于快速添加结构化的经验、错误或功能请求。
+
+### 使用方法
+
+```bash
+./scripts/add_learning.sh --type <type> --summary "摘要" --content "详细内容" [其他选项]
+```
+
+### 必填参数
+
+- `--type`: `learning` | `error` | `feature_request`
+- `--summary`: 摘要 (用于 changelog)
+- `--content`: 详细内容
+- `--area`: 领域 (e.g., `research`, `infra`, `tools`, `docs`, `config`)
+- `--priority`: 优先级 (`low`, `medium`, `high`, `critical`)
+
+### 可选参数
+
+**Learning 类型:**
+- `--category`: 分类 (`correction`, `knowledge_gap`, `best_practice`, `task_review`)
+- `--source`: 来源 (`error`, `correction`, `user_feedback`, `task_review`, `best_practice`)
+- `--see-also`: 关联条目 ID
+- `--pattern-key`: 模式关键词
+
+**Error 类型:**
+- `--reproducible`: 是否可复现 (`yes`, `no`, `unknown`)
+- `--see-also`: 关联条目 ID
+
+**Feature Request 类型:**
+- `--complexity`: 复杂度 (`simple`, `medium`, `complex`)
+- `--frequency`: 频率 (`first_time`, `recurring`)
+
+
+## 7. 快速参考
 
 ### 触发速查
 
