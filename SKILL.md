@@ -1,8 +1,7 @@
 ---
 name: proactive-self-improving-agent
-version: 1.0.0
-description: "自动捕获经验并安全进化的技能。触发条件：(1)命令/操作失败时→记ERRORS.md (2)被用户纠正('不对'/'应该是')时→记LEARNINGS.md (3)用户需要不存在的能力时→记FEATURE_REQUESTS.md (4)外部API/工具出错时→记ERRORS.md (5)发现自己知识过时/错误时→记LEARNINGS.md (6)发现更好做法时→记LEARNINGS.md (7)每个任务完成时→回顾过程，有新经验则记LEARNINGS.md。去重原则：如果没有新经验或已有条目已覆盖则跳过不写。每次写入同时在.learnings/CHANGELOG.md追加JSONL日志。经验反复出现≥3次时晋升到AGENTS.md/TOOLS.md/SOUL.md。详见正文。"
-author: yanhongxi-openclaw
+description: "自动捕获经验并安全进化的技能。触发条件：(1)命令/操作失败时→记ERRORS.md (2)被用户纠正('不对'/'应该是')时→记LEARNINGS.md (3)用户需要不存在的能力时→记FEATURE_REQUESTS.md (4)外部API/工具出错时→记ERRORS.md (5)发现自己知识过时/错误时→记LEARNINGS.md (6)发现更好做法时→记LEARNINGS.md (7)每个任务完成时→回顾过程，有新经验则记LEARNINGS.md。所有记录写入当前项目根目录的 .learnings/（不存在则先用技能自带脚本 scripts/init-learnings.sh 初始化），每次写入同时在 .learnings/CHANGELOG.md 追加 JSONL 日志。去重原则：如果没有新经验或已有条目已覆盖则跳过不写。经验反复出现≥3次时晋升到项目 AGENTS.md 或全局 ~/.kimi-code/AGENTS.md；足够通用时提取为 .agents/skills/ 下的独立技能。详见正文。"
+whenToUse: 当命令或工具调用失败、被用户纠正、发现知识过时或错误、发现更好做法、用户请求不存在的能力、或任务完成需要回顾复盘时使用；用于把经验结构化记录到当前项目的 .learnings/ 并管理晋升
 ---
 
 # Proactive Self-Improving Agent
@@ -93,6 +92,8 @@ author: yanhongxi-openclaw
 
 ### 2.2 文件体系
 
+`.learnings/` 位于**当前项目根目录**（即每个工作区各自一份，随项目走）：
+
 ```
 .learnings/
 ├── LEARNINGS.md          # 经验/纠正/最佳实践/任务回顾
@@ -100,6 +101,14 @@ author: yanhongxi-openclaw
 ├── FEATURE_REQUESTS.md   # 能力请求
 └── CHANGELOG.md          # 操作日志（详见第 4 节）
 ```
+
+**首次使用前先初始化**：当前项目还没有 `.learnings/` 时，运行技能自带的初始化脚本（模板在技能目录里）：
+
+```bash
+bash ${KIMI_SKILL_DIR}/scripts/init-learnings.sh
+```
+
+脚本已存在则跳过，不会覆盖已有记录。建议把 `.learnings/` 提交到项目 git，让团队共享经验沉淀；如不想提交，把 `.learnings/` 加入项目 `.gitignore`。
 
 ### 2.3 记录格式
 
@@ -202,13 +211,15 @@ simple | medium | complex
 
 ### 3.1 晋升机制
 
-当一条 learning **足够重要且通用**时，将其精炼后写入永久文件：
+当一条 learning **足够重要且通用**时，将其精炼后写入永久文件。Kimi Code 的指令文件体系：
 
 | 经验类型 | 晋升到 | 举例 |
 |---|---|---|
-| 工作流改进 | `AGENTS.md` | "批量处理论文时每篇独立 spawn" |
-| 工具使用技巧 | `TOOLS.md` | "Semantic Scholar API 限流 3s 间隔" |
-| 行为模式 | `SOUL.md` | "不确定分类时用 unclassified/" |
+| 项目工作流改进 | 项目根 `AGENTS.md` | "批量处理论文时每篇独立派生子代理" |
+| 工具使用技巧 | 项目根 `AGENTS.md` 的"工具使用"章节 | "Semantic Scholar API 限流 3s 间隔" |
+| 跨项目行为模式 | 全局 `~/.kimi-code/AGENTS.md` 或跨工具通用的 `~/.agents/AGENTS.md` | "不确定分类时用 unclassified/" |
+
+选择规则：只对当前项目成立的经验写入**项目** `AGENTS.md`（会被 Kimi Code 自动加载，随 git 共享给团队）；对所有项目都成立的行为习惯写入**全局** `~/.kimi-code/AGENTS.md`（或 `~/.agents/AGENTS.md`，后者对其他兼容工具同样生效）。
 
 **晋升步骤：**
 
@@ -219,10 +230,10 @@ simple | medium | complex
 
 ### 3.2 递归模式检测
 
-当记录新条目时，**先搜索是否有相似的旧条目**：
+当记录新条目时，**先搜索是否有相似的旧条目**（用 Grep 工具或 rg）：
 
 ```bash
-grep -r "关键词" .learnings/
+rg "关键词" .learnings/
 ```
 
 - 找到相似条目 → 添加 `See Also` 互相链接
@@ -242,8 +253,8 @@ grep -r "关键词" .learnings/
 
 **提取步骤：**
 
-1. 创建 `skills/<skill-name>/SKILL.md`
-2. 将解决方案写成独立的、自包含的技能说明
+1. 创建 `.agents/skills/<skill-name>/SKILL.md`（仅本项目可用）；若跨项目通用，创建 `~/.agents/skills/<skill-name>/SKILL.md`（用户级，所有项目可用）
+2. 写成独立的、自包含的技能说明；目录形式的 SKILL.md 必须在 YAML frontmatter 中显式提供 `name` 和 `description`，否则 Kimi Code 解析失败
 3. 更新原条目：Status → `promoted_to_skill`
 4. 记录日志：CHANGELOG.md 追加 `extract` 记录
 
@@ -294,8 +305,8 @@ grep -r "关键词" .learnings/
 \```jsonl
 {"ts":"2026-03-02T11:00:00+08:00","action":"add","type":"learning","id":"LRN-20260302-001","summary":"Semantic Scholar API 需要 3s 间隔防限流"}
 {"ts":"2026-03-02T14:30:00+08:00","action":"add","type":"error","id":"ERR-20260302-001","summary":"pdfplumber 遇到扫描版 PDF 返回空文本"}
-{"ts":"2026-03-03T09:00:00+08:00","action":"promote","type":"learning","id":"LRN-20260302-001","summary":"API 限流规则","target":"TOOLS.md"}
-{"ts":"2026-03-05T10:00:00+08:00","action":"extract","type":"learning","id":"LRN-20260304-002","summary":"扫描版 PDF 处理","target":"skills/pdf-fallback"}
+{"ts":"2026-03-03T09:00:00+08:00","action":"promote","type":"learning","id":"LRN-20260302-001","summary":"API 限流规则","target":"AGENTS.md"}
+{"ts":"2026-03-05T10:00:00+08:00","action":"extract","type":"learning","id":"LRN-20260304-002","summary":"扫描版 PDF 处理","target":".agents/skills/pdf-fallback"}
 {"ts":"2026-03-05T12:00:00+08:00","action":"resolve","type":"error","id":"ERR-20260302-001","summary":"改用 OCR fallback 方案"}
 \```
 ```
@@ -316,7 +327,7 @@ grep -r "关键词" .learnings/
 | action | 含义 | 触发时机 |
 |---|---|---|
 | `add` | 新增记录 | 写入 LEARNINGS/ERRORS/FEATURE_REQUESTS 时 |
-| `promote` | 晋升 | 经验写入 AGENTS.md / TOOLS.md / SOUL.md 时 |
+| `promote` | 晋升 | 经验写入 AGENTS.md（项目或全局）时 |
 | `extract` | 提取技能 | 经验提取为独立 skill 时 |
 | `resolve` | 已解决 | 问题修复、标记 resolved 时 |
 
@@ -350,7 +361,7 @@ sed -n '/^```jsonl$/,/^```$/p' .learnings/CHANGELOG.md | grep -v '```'
 1. 立刻换一种方法
 2. 再换一种
 3. 尝试 5-10 种方法后再考虑求助
-4. 利用所有可用工具：CLI、浏览器、搜索、spawn 子 agent
+4. 利用所有可用工具：CLI、浏览器、网络搜索、Agent/AgentSwarm 子代理
 5. 创造性地组合工具
 
 **在说"做不到"之前：**
@@ -409,15 +420,15 @@ sed -n '/^```jsonl$/,/^```$/p' .learnings/CHANGELOG.md | grep -v '```'
 ### 进化速查
 
 ```
-.learnings/*.md          （原始记录）
+.learnings/*.md                       （原始记录，随项目走）
       │
       │  反复出现 or 足够重要
       ▼
-AGENTS.md / TOOLS.md     （晋升为永久规则）
+AGENTS.md（项目）/ ~/.kimi-code/AGENTS.md（全局）   （晋升为永久规则）
       │
       │  足够通用 + 可独立
       ▼
-skills/<new-skill>/      （提取为独立技能）
+.agents/skills/<new-skill>/           （提取为独立技能）
 ```
 
 ### 写入检查清单
@@ -425,6 +436,7 @@ skills/<new-skill>/      （提取为独立技能）
 每次触发时：
 
 - [ ] **先判断**：这是新经验吗？还是已有条目已覆盖？→ 不新颖则跳过
+- [ ] `.learnings/` 存在（不存在先运行 init 脚本）
 - [ ] 条目 ID 格式正确（`TYPE-YYYYMMDD-XXX`）
 - [ ] 内容具体、可操作（不是"调查一下"）
 - [ ] 搜索过是否有相似旧条目（关联 See Also）
