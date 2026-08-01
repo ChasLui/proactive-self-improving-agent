@@ -36,8 +36,8 @@ git clone https://github.com/ChasLui/proactive-self-improving-agent.git \
 首次使用时：
 
 ```bash
-mkdir -p ~/.claude/.learnings
-cp -n templates/learnings/*.md ~/.claude/.learnings/
+mkdir -p ~/.agents/.learnings
+cp -n templates/learnings/*.md ~/.agents/.learnings/
 ```
 
 Claude 也会在 skill 触发时自行完成这一步。
@@ -69,7 +69,7 @@ Claude 也会在 skill 触发时自行完成这一步。
 |---|---|---|
 | frontmatter | `version` / `author` | 移入 `plugin.json` |
 | 安装 | `openclaw add <repo>` | `/plugin marketplace add` |
-| 经验池 | workspace `.learnings/` | `~/.claude/.learnings/`（项目特有经验可放 `./.claude/.learnings/`） |
+| 经验池 | workspace `.learnings/` | `~/.agents/.learnings/`（项目特有经验可放 `./.claude/.learnings/`） |
 | 晋升目标 | `AGENTS.md` / `TOOLS.md` / `SOUL.md` | `CLAUDE.md` / `.claude/rules/` |
 | 技能提取 | `skills/<name>/` | `.claude/skills/<name>/SKILL.md` |
 | VFM 门槛 | `< 50 不晋升`（满分即门槛，晋升永不触发） | `< 30 / 50 不晋升` |
