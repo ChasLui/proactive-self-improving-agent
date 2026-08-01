@@ -86,7 +86,7 @@ cp -n .learnings/*.md ~/.grok/.learnings/
 |---|---|---|---|---|
 | 安装 | `openclaw add` | plugin / `~/.claude/skills/` | `~/.codex/skills/` | `~/.grok/skills/` |
 | skill name | `proactive-self-improving-agent` | 同左 | 同左 | **`self-evolve`** |
-| 经验池 | workspace `.learnings/` | `~/.claude/.learnings/` | `~/.codex/.learnings/` | **`~/.grok/.learnings/`** |
+| 经验池 | workspace `.learnings/` | `~/.agents/.learnings/` | `~/.codex/.learnings/` | **`~/.grok/.learnings/`** |
 | 晋升目标 | `AGENTS.md` / `TOOLS.md` / `SOUL.md` | `CLAUDE.md` / rules / skills | `AGENTS.md` / skills | **`memory/` / `AGENTS.md` / skills** |
 | 沉淀检索 | — | 规则文件 grep | 规则文件 grep | **`memory_search` + `rg`** |
 | VFM 门槛 | `< 50`（满分即门槛，几乎不可达） | `≥ 30 / 50` | 验证后晋升 | **`≥ 30 / 50`** |
