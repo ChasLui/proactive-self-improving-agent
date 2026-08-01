@@ -8,7 +8,7 @@
 
 - **7 类触发**：命令失败、外部 API 出错、用户纠正、知识过时、更好做法、能力请求、任务完成回顾
 - **去重优先**：触发 ≠ 必须写入。memory 沉淀层或已有条目覆盖则跳过，避免污染检索
-- **三文件经验池**：`~/.claude/.learnings/` 下 `LEARNINGS.md` / `ERRORS.md` / `FEATURE_REQUESTS.md`
+- **三文件经验池**：`~/.agents/.learnings/` 下 `LEARNINGS.md` / `ERRORS.md` / `FEATURE_REQUESTS.md`
 - **单向晋升**：`.learnings/` 原始池 → memory 沉淀层 → `CLAUDE.md` / `AGENT-SKILLS.md` → 独立 skill
 - **安全护栏**：ADL 防漂移 + VFM 价值打分（≥30/50 才晋升）+ 改长期生效文件前必须告知用户
 - **操作日志**：JSONL 格式 CHANGELOG，`jq` 可查
@@ -36,8 +36,8 @@ git clone https://github.com/ChasLui/proactive-self-improving-agent.git \
 首次使用时：
 
 ```bash
-mkdir -p ~/.claude/.learnings
-cp -n templates/learnings/*.md ~/.claude/.learnings/
+mkdir -p ~/.agents/.learnings
+cp -n templates/learnings/*.md ~/.agents/.learnings/
 ```
 
 reasonix 也会在 skill 触发时自行完成这一步。
@@ -67,7 +67,7 @@ reasonix 也会在 skill 触发时自行完成这一步。
 |---|---|---|
 | frontmatter | `version` / `author` | `name` / `description`（触发条件内嵌 description） |
 | 安装 | `openclaw add <repo>` | clone 到 `~/.claude/skills/` 或 `.reasonix/skills/` |
-| 经验池 | workspace `.learnings/` | `~/.claude/.learnings/`（项目特有经验可放 `<repo>/.learnings/`） |
+| 经验池 | workspace `.learnings/` | `~/.agents/.learnings/`（项目特有经验可放 `<repo>/.learnings/`） |
 | 写入前置去重 | 仅查 `.learnings/` | 先查 memory 沉淀层，再查 `.learnings/` |
 | 晋升目标 | `AGENTS.md` / `TOOLS.md` / `SOUL.md` | memory 沉淀层 / `CLAUDE.md` / `AGENT-SKILLS.md` |
 | 技能提取 | `skills/<name>/` | `~/.claude/skills/<name>/` 或 `.reasonix/skills/<name>/` |

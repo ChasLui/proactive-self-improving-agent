@@ -22,7 +22,7 @@
 复现次数不单独存字段，用 Pattern-Key 计数：
 
 ```bash
-grep -rc "Pattern-Key: chezmoi-readd" ~/.claude/.learnings/
+grep -rc "Pattern-Key: chezmoi-readd" ~/.agents/.learnings/
 ```
 
 ## Learning 条目
@@ -128,7 +128,7 @@ simple | medium | complex
 ### 查询
 
 ```bash
-CL=~/.claude/.learnings/CHANGELOG.md
+CL=~/.agents/.learnings/CHANGELOG.md
 extract() { sed -n '/^```jsonl$/,/^```$/p' "$CL" | grep -v '```'; }
 
 extract | jq -c 'select(.action == "promote") | {id, summary, target}'

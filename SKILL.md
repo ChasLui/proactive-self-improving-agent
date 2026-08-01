@@ -1,6 +1,6 @@
 ---
 name: proactive-self-improving-agent
-description: 自动捕获经验并安全进化。命令/工具/API 失败、被用户纠正（"不对"/"应该是"/"Actually"）、发现自己知识过时或错误、发现更好做法、用户需要不存在的能力、任务完成回顾——先评估是否有可复用的新经验，有则写入 ~/.claude/.learnings/，反复出现或高价值时晋升到 memory 沉淀层 / CLAUDE.md / AGENT-SKILLS.md / 独立 skill。写入前先去重：memory 沉淀层或已有条目已覆盖则跳过。详见正文。
+description: 自动捕获经验并安全进化。命令/工具/API 失败、被用户纠正（"不对"/"应该是"/"Actually"）、发现自己知识过时或错误、发现更好做法、用户需要不存在的能力、任务完成回顾——先评估是否有可复用的新经验，有则写入 ~/.agents/.learnings/，反复出现或高价值时晋升到 memory 沉淀层 / CLAUDE.md / AGENT-SKILLS.md / 独立 skill。写入前先去重：memory 沉淀层或已有条目已覆盖则跳过。详见正文。
 ---
 
 # Proactive Self-Improving Agent
@@ -36,7 +36,7 @@ description: 自动捕获经验并安全进化。命令/工具/API 失败、被�
 默认写用户级经验池，跨项目累积：
 
 ```text
-~/.claude/.learnings/
+~/.agents/.learnings/
 ├── LEARNINGS.md          # 纠正 / 知识过时 / 更好做法 / 任务回顾
 ├── ERRORS.md             # 命令、工具、外部 API 失败
 ├── FEATURE_REQUESTS.md   # 用户需要但不存在的能力
@@ -46,7 +46,7 @@ description: 自动捕获经验并安全进化。命令/工具/API 失败、被�
 首次使用时若目录不存在，从本 skill 的 `templates/learnings/` 拷贝初始化（在 skill 仓库根目录执行；reasonix 触发时也会自动完成）：
 
 ```bash
-mkdir -p ~/.claude/.learnings && cp -n templates/learnings/*.md ~/.claude/.learnings/
+mkdir -p ~/.agents/.learnings && cp -n templates/learnings/*.md ~/.agents/.learnings/
 ```
 
 > 若某条经验**只对当前 repo 有意义**（该项目特有的构建命令、目录约定），写 `<repo>/.learnings/` 而不是用户级。判据：换一个项目还会用到吗？
@@ -57,7 +57,7 @@ mkdir -p ~/.claude/.learnings && cp -n templates/learnings/*.md ~/.claude/.learn
 
 1. **查已晋升的沉淀层**：`grep -ri "<关键词>" ~/.claude/projects/*/memory/ 2>/dev/null`（或用 memory 工具搜索）
    - 命中且已覆盖 → **完全跳过**，什么都不写。
-2. **查经验池**：`grep -ri "<关键词>" ~/.claude/.learnings/`
+2. **查经验池**：`grep -ri "<关键词>" ~/.agents/.learnings/`
    - 命中相似条目 → 不新建，给旧条目加 `See Also` 互链，复用同一 `Pattern-Key`。
 3. 都没命中 → 新建条目 + 追加 CHANGELOG。
 
@@ -159,7 +159,7 @@ type: feedback
 操作失败时，先换方法再求助。在说"做不到"之前自查：
 
 - 试过替代方法了吗？（CLI / API / 不同语法）
-- 查过 `~/.claude/.learnings/` 了吗？也许之前记录过解法
+- 查过 `~/.agents/.learnings/` 了吗？也许之前记录过解法
 - 读完报错全文了吗？通常里面就有 workaround
 
 > **"做不到" = 穷尽了所有方案**，不是"第一次失败了"。
@@ -176,7 +176,7 @@ type: feedback
 触发 → grep memory 沉淀层 ── 已覆盖 ──→ 跳过（什么都不写）
         │未覆盖
         ▼
-      grep ~/.claude/.learnings/ ── 相似 ──→ 复用 Pattern-Key + See Also 互链
+      grep ~/.agents/.learnings/ ── 相似 ──→ 复用 Pattern-Key + See Also 互链
         │全新
         ▼
       .learnings/ 新条目 + CHANGELOG add
